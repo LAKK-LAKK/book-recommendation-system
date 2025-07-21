@@ -1,0 +1,19 @@
+<div class="col">
+    <div class="card h-100 shadow-sm">
+        <a href="{{ url_for('main.book_detail', book_id=book.id) }}">
+            <img src="{{ book.cover_image }}" class="card-img-top" alt="{{ book.title }} 封面" style="height: 200px; object-fit: cover;">
+        </a>
+        <div class="card-body p-2 d-flex flex-column">
+            <h6 class="card-title" style="font-size: 0.9rem;">
+                <a href="{{ url_for('main.book_detail', book_id=book.id) }}" class="text-decoration-none text-dark stretched-link">
+                    {{ book.title|truncate(20) }}
+                </a>
+            </h6>
+        </div>
+        {% if book.rating %}
+        <div class="card-footer bg-transparent border-0 p-2 pt-0">
+            <small class="text-muted">评分: <span class="fw-bold text-primary">{{ book.rating }}</span></small>
+        </div>
+        {% endif %}
+    </div>
+</div>

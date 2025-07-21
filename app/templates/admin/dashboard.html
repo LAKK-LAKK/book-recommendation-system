@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}管理员后台{% endblock %}
+{% block content %}
+    <h1 class="mb-4">管理员后台</h1>
+
+    <div class="row mb-4">
+        <div class="col-md-3"><div class="card text-center text-bg-primary shadow-sm"><div class="card-body"><h3>{{ user_count }}</h3><p class="card-text">总用户数</p></div></div></div>
+        <div class="col-md-3"><div class="card text-center text-bg-success shadow-sm"><div class="card-body"><h3>{{ book_count }}</h3><p class="card-text">总图书数</p></div></div></div>
+        <div class="col-md-3"><div class="card text-center text-bg-info shadow-sm"><div class="card-body"><h3>{{ comment_count }}</h3><p class="card-text">总评论数</p></div></div></div>
+        <div class="col-md-3"><div class="card text-center text-bg-secondary shadow-sm h-100"><div class="card-body d-flex align-items-center justify-content-center"><a href="{{ url_for('main.carousel_management') }}" class="btn btn-light">轮播图管理</a><a > | </a><a href="{{ url_for('main.book_management') }}" class="btn btn-light">书籍管理</a></div></div></div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-header">
+            <h4><i class="bi bi-people-fill"></i> 用户管理</h4>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead>
+                        <tr><th>ID</th><th>用户名</th><th>邮箱</th><th>角色</th><th>注册时间</th><th>操作</th></tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                        <tr>
+                            <td>{{ user.id }}</td>
+                            <td>{{ user.username }}</td>
+                            <td>{{ user.email }}</td>
+                            <td><span class="badge bg-{{ 'primary' if user.is_admin() else 'secondary' }}">{{ user.role }}</span></td>
+                            <td>{{ user.created_at.strftime('%Y-%m-%d') }}</td>
+                            <td>
+                                <a href="{{ url_for('main.admin_edit_user', user_id=user.id) }}" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i> 编辑</a>
+                                {% if not user.is_admin() %}
+                                <form action="{{ url_for('main.admin_delete_user', user_id=user.id) }}" method="post" class="d-inline" onsubmit="return confirm('确定要删除这个用户吗？');">
+                                    <button type="submit" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i> 删除</button>
+                                </form>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

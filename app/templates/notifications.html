@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}我的消息{% endblock %}
+{% block content %}
+<h1>我的消息</h1>
+<div class="list-group">
+{% for notification in notifications %}
+    <div class="list-group-item">
+        <i class="bi {{ 'bi-heart-fill text-danger' if notification.notification_type == 'like' else 'bi-chat-dots-fill text-primary' }}"></i>
+        <strong>{{ notification.sender.username }}</strong>
+        {% if notification.notification_type == 'like' %}
+            点赞了您的帖子:
+        {% else %}
+            回复了您的帖子:
+        {% endif %}
+        <a href="{{ url_for('main.post_detail', post_id=notification.post_id) }}">{{ notification.post.title }}</a>
+        <span class="text-muted float-end">{{ notification.created_at.strftime('%Y-%m-%d') }}</span>
+    </div>
+{% else %}
+    <p>没有新消息。</p>
+{% endfor %}
+</div>
+{% endblock %}

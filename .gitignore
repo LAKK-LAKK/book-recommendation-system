@@ -1,0 +1,27 @@
+# /BookRecommendSystem/.gitignore
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual Environment
+venv/
+.venv/
+env/
+ENV/
+
+# Sensitive Files - 绝不上传此文件！
+.env
+
+# Uploads
+uploads/
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# IDE-specific
+.idea/
+.vscode/

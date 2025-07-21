@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+    <h2>{{ title }}</h2>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <div class="mb-3">{{ form.book_id.label }}{{ form.book_id(class="form-control") }}</div>
+        <div class="mb-3">{{ form.custom_title.label }}{{ form.custom_title(class="form-control") }}</div>
+        <div class="mb-3">{{ form.custom_summary.label }}{{ form.custom_summary(class="form-control", rows=3) }}</div>
+        <div class="mb-3">{{ form.image_url.label }}{{ form.image_url(class="form-control") }}</div>
+        <div class="mb-3">{{ form.target_url.label }}{{ form.target_url(class="form-control") }}</div>
+        <div class="mb-3">{{ form.display_order.label }}{{ form.display_order(class="form-control") }}</div>
+        <div class="form-check mb-3">{{ form.is_active(class="form-check-input") }} {{ form.is_active.label(class="form-check-label") }}</div>
+        {{ form.submit(class="btn btn-primary") }}
+        <a href="{{ url_for('main.carousel_management') }}" class="btn btn-secondary">取消</a>
+    </form>
+{% endblock %}

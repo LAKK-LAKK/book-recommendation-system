@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}批量导入书籍{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow-sm">
+            <div class="card-header"><h2>批量导入书籍</h2></div>
+            <div class="card-body">
+                <div class="alert alert-info">
+                    <h4 class="alert-heading">操作指南</h4>
+                    <p>1. 首先，请下载标准的Excel模板文件。</p>
+                    <p>2. 按照模板中的列名填写书籍信息。`title`为必填项，`isbn`为重要唯一标识，建议填写。</p>
+                    <p>3. 保存填写好的Excel文件，然后通过下方的表单上传。</p>
+                    <a href="{{ url_for('main.download_template') }}" class="btn btn-success"><i class="bi bi-file-earmark-arrow-down"></i> 下载模板</a>
+                </div>
+                <hr>
+                <form method="POST" enctype="multipart/form-data">
+                    {{ form.hidden_tag() }}
+                    <div class="mb-3">
+                        {{ form.file.label(class="form-label") }}
+                        {{ form.file(class="form-control") }}
+                        {% for error in form.file.errors %}
+                            <span class="text-danger">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {{ form.submit(class="btn btn-primary") }}
+                    <a href="{{ url_for('main.book_management') }}" class="btn btn-secondary">返回</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

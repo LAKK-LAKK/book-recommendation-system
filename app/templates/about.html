@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}关于我们{% endblock %}
+
+{% block content %}
+<div class="card shadow-sm">
+    <div class="card-body p-5">
+        <h1 class="card-title text-center mb-4">关于本项目</h1>
+        <p class="lead text-center">
+            本项目是一个基于情感分析的智能图书推荐系统，旨在为用户提供个性化、高质量的图书发现体验。
+        </p>
+        <hr class="my-4">
+
+        <h4 class="mt-5">核心技术栈</h4>
+        <ul>
+            <li><strong>后端框架:</strong> Flask</li>
+            <li><strong>数据库:</strong> MySQL with SQLAlchemy</li>
+            <li><strong>前端框架:</strong> Bootstrap 5</li>
+            <li><strong>数据处理与分析:</strong> Pandas, Scikit-learn</li>
+            <li><strong>自然语言处理:</strong> SnowNLP</li>
+            <li><strong>数据可视化:</strong> Chart.js</li>
+        </ul>
+
+        <h4 class="mt-5">项目亮点</h4>
+        <p>
+            本系统不仅实现了常规的Web应用功能（如用户管理、内容展示、社区交流），更融合了小型的创新算法。通过对用户评论进行情感分析，并将分析结果作为权重之一加入到基于内容（TF-IDF + 余弦相似度）的推荐算法中，使得推荐结果不仅考虑了内容相关性，也兼顾了书籍的公众口碑，为用户提供了更智能、更人性化的推荐。
+        </p>
+
+        <footer class="text-muted text-center mt-5">
+            <p>这是我发布的第一个Flask项目。</p>
+            <p>作者：</p>
+        </footer>
+    </div>
+</div>
+{% endblock %}

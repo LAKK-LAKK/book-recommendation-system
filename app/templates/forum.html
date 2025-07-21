@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1>{{ title }}</h1>
+    <a href="{{ url_for('main.new_post') }}" class="btn btn-primary"><i class="bi bi-plus-circle"></i> 发布新帖</a>
+</div>
+<div class="d-flex justify-content-center mb-4">
+    <div class="btn-group" role="group">
+        <a href="{{ url_for('main.forum', sort_by='time') }}" class="btn btn-outline-primary {{ 'active' if request.args.get('sort_by', 'time') == 'time' }}">最新发布</a>
+        <a href="{{ url_for('main.forum', sort_by='likes') }}" class="btn btn-outline-primary {{ 'active' if request.args.get('sort_by') == 'likes' }}">最多点赞</a>
+        <a href="{{ url_for('main.forum', sort_by='replies') }}" class="btn btn-outline-primary {{ 'active' if request.args.get('sort_by') == 'replies' }}">最多回复</a>
+    </div>
+</div>
+
+<div id="post-grid" class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+    </div>
+
+<div id="loading" class="text-center my-4" style="display: none;">
+    <div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const postGrid = document.getElementById('post-grid');
+    const loadingIndicator = document.getElementById('loading');
+    let page = 1;
+    let isLoading = false;
+    const sortBy = new URLSearchParams(window.location.search).get('sort_by') || 'time';
+
+    function loadPosts() {
+        if (isLoading) return;
+        isLoading = true;
+        loadingIndicator.style.display = 'block';
+
+        fetch(`/api/posts?page=${page}&sort_by=${sortBy}`)
+            .then(response => response.text())
+            .then(html => {
+                if (html.trim()) {
+                    postGrid.insertAdjacentHTML('beforeend', html);
+                    page++;
+                    isLoading = false;
+                }
+                loadingIndicator.style.display = 'none';
+            });
+    }
+
+    window.addEventListener('scroll', () => {
+        if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 500) {
+            loadPosts();
+        }
+    });
+
+    // 初次加载
+    loadPosts();
+});
+</script>
+{% endblock %}

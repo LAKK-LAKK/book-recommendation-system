@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% block title %}书海统计{% endblock %}
+
+{% block content %}
+<h1 class="mb-8">书海统计</h1>
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="card shadow-sm">
+            <div class="card-header"><h4>各年份出版书籍数量</h4></div>
+            <div class="card-body">
+                <canvas id="booksByYearChart"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card shadow-sm">
+            <div class="card-header"><h4>书籍评分分布</h4></div>
+            <div class="card-body">
+                <canvas id="ratingDistributionChart"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card shadow-sm">
+            <div class="card-header"><h4>书籍页数分布</h4></div>
+            <div class="card-body">
+                <canvas id="pageDistributionChart"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-8">
+        <div class="card shadow-sm">
+            <div class="card-header"><h4>评论活跃用户榜 Top 10</h4></div>
+            <div class="card-body">
+                <canvas id="activeUsersChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // 预设一些颜色
+    const chartColors = [
+        'rgba(54, 162, 235, 0.7)', 'rgba(255, 99, 132, 0.7)', 'rgba(75, 192, 192, 0.7)',
+        'rgba(255, 206, 86, 0.7)', 'rgba(153, 102, 255, 0.7)', 'rgba(255, 159, 64, 0.7)'
+    ];
+
+    // 图表1：各年份出版书籍 (条形图)
+    const ctx1 = document.getElementById('booksByYearChart').getContext('2d');
+    new Chart(ctx1, {
+        type: 'bar',
+        data: {
+            labels: {{ years_data.labels|tojson }},
+            datasets: [{
+                label: '书籍数量',
+                data: {{ years_data.data|tojson }},
+                backgroundColor: chartColors[0]
+            }]
+        },
+        options: { indexAxis: 'x', responsive: true, plugins: { legend: { display: false } } }
+    });
+
+    // 图表2：书籍评分分布 (饼图)
+    const ctx2 = document.getElementById('ratingDistributionChart').getContext('2d');
+    new Chart(ctx2, {
+        type: 'pie',
+        data: {
+            labels: {{ rating_data.labels|tojson }},
+            datasets: [{ data: {{ rating_data.data|tojson }}, backgroundColor: chartColors }]
+        },
+        options: { responsive: true, plugins: { legend: { position: 'top' } } }
+    });
+
+    // 图表3：书籍页数分布 (甜甜圈图)
+    const ctx3 = document.getElementById('pageDistributionChart').getContext('2d');
+    new Chart(ctx3, {
+        type: 'doughnut',
+        data: {
+            labels: {{ page_data.labels|tojson }},
+            datasets: [{ data: {{ page_data.data|tojson }}, backgroundColor: chartColors }]
+        },
+        options: { responsive: true, plugins: { legend: { position: 'top' } } }
+    });
+
+    // 图表4：评论活跃用户榜 (横向条形图)
+    const ctx4 = document.getElementById('activeUsersChart').getContext('2d');
+    new Chart(ctx4, {
+        type: 'bar',
+        data: {
+            labels: {{ active_users_data.labels|tojson }},
+            datasets: [{
+                label: '评论数量',
+                data: {{ active_users_data.data|tojson }},
+                backgroundColor: chartColors[1]
+            }]
+        },
+        options: {
+            indexAxis: 'y', // 这会让条形图变为横向
+            responsive: true,
+            plugins: { legend: { display: false } }
+        }
+    });
+});
+</script>
+{% endblock %}

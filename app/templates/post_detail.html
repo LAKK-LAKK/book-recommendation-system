@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block content %}
+    <div class="mb-3">
+    <a href="javascript:history.back()" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left"></i> 返回上一级
+    </a>
+</div>
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h1>{{ post.title }}</h1>
+                <div class="text-muted mb-3">
+                    由 {{ post.author.username }} 发布于 {{ post.created_at.strftime('%Y-%m-%d') }}
+                </div>
+                <hr>
+                <div class="post-body">
+                    {{ post.body|safe }}
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow-sm mt-4">
+            <div class="card-header"><h4>回复 ({{ replies|length }})</h4></div>
+            <div class="card-body">
+                {% for reply in replies %}
+                <div class="d-flex mb-3">
+                    <div class="flex-shrink-0"><i class="bi bi-person-circle fs-3"></i></div>
+                    <div class="ms-3 flex-grow-1">
+                        <div class="fw-bold">{{ reply.author.username }} <small class="text-muted">{{ reply.created_at.strftime('%Y-%m-%d') }}</small></div>
+                        {{ reply.body }}
+                         {% if current_user.is_authenticated and (reply.author == current_user or current_user.is_admin()) %}
+                            <form action="{{ url_for('main.delete_reply', reply_id=reply.id) }}" method="post" class="d-inline">
+                                <button type="submit" class="btn btn-link btn-sm text-danger p-0">删除</button>
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+                {% if current_user.is_authenticated %}
+                <hr>
+                <form method="POST">
+                    {{ form.hidden_tag() }}
+                    <div class="mb-3">{{ form.body(class="form-control", rows=3) }}</div>
+                    {{ form.submit(class="btn btn-primary") }}
+                </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="position-sticky" style="top: 5rem;">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5>帖子操作</h5>
+                    {% if current_user.is_authenticated %}
+                    <form id="like-form" class="d-grid gap-2">
+                        <button id="like-btn" type="button" class="btn {{ 'btn-danger' if current_user.has_liked_post(post) else 'btn-outline-danger' }}">
+                            <i class="bi bi-heart"></i> <span id="like-text">{{ '取消点赞' if current_user.has_liked_post(post) else '点赞' }}</span> (<span id="like-count">{{ post.liked_by.count() }}</span>)
+                        </button>
+                    </form>
+                    {% endif %}
+                    {% if current_user.is_authenticated and (post.author == current_user or current_user.is_admin()) %}
+                    <form action="{{ url_for('main.delete_post', post_id=post.id) }}" method="post" class="d-grid gap-2 mt-2" onsubmit="return confirm('确定删除？')">
+                        <button type="submit" class="btn btn-outline-secondary">删除帖子</button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('like-btn').addEventListener('click', function() {
+    let btn = this;
+    let isLiked = btn.classList.contains('btn-danger');
+    let url = isLiked ? "{{ url_for('main.unlike_post', post_id=post.id) }}" : "{{ url_for('main.like_post', post_id=post.id) }}";
+
+    fetch(url, { method: 'POST' })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'ok') {
+                document.getElementById('like-count').textContent = data.likes;
+                btn.classList.toggle('btn-danger');
+                btn.classList.toggle('btn-outline-danger');
+                document.getElementById('like-text').textContent = isLiked ? '点赞' : '取消点赞';
+            }
+        });
+});
+</script>
+{% endblock %}

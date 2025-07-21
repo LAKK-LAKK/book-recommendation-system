@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %}首页 - 智能图书推荐{% endblock %}
+{% block content %}
+
+{% if carousel_items and carousel_items|length > 0 %}
+    {% set item_count = carousel_items|length %}
+    {% set slide_width = 220 %} {# 与CSS中的 slide width 保持一致 #}
+    {% set animation_duration = item_count * 5 %} {# 每张图片滚动5秒，速度更均匀 #}
+
+    <div class="scrolling-carousel-container"
+         style="--scroll-width: {{ slide_width * item_count }}px;
+                --track-width: {{ slide_width * item_count * 2 }}px;
+                --duration: {{ animation_duration }}s;">
+
+        <div class="scrolling-track">
+            {% for item in carousel_items %}
+            <div class="slide">
+                <a href="{{ item.target_url }}">
+                    <img src="{{ item.image_url }}" alt="{{ item.custom_title or item.book.title }}">
+                </a>
+            </div>
+            {% endfor %}
+            {% for item in carousel_items %}
+            <div class="slide">
+                <a href="{{ item.target_url }}">
+                    <img src="{{ item.image_url }}" alt="{{ item.custom_title or item.book.title }}">
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endif %}
+
+<div class="p-5 mb-5 bg-white rounded-3 shadow-sm text-center border">
+    <h1 class="display-5 fw-bold">探索无尽书海</h1>
+    <p class="fs-4 text-muted">输入您感兴趣的书籍，开启智能推荐之旅</p>
+    <form class="d-flex justify-content-center" action="{{ url_for('main.search') }}" method="get">
+        <div class="input-group w-75">
+            <input class="form-control form-control-lg" type="search" name="q" placeholder="例如：三体" aria-label="Search">
+            <button class="btn btn-primary btn-lg" type="submit"><i class="bi bi-search"></i> 搜索</button>
+        </div>
+    </form>
+</div>
+
+<div class="row g-5">
+    <div class="col-md-8">
+        <div class="mb-5">
+            <h2 class="pb-2 border-bottom"><i class="bi bi-calendar-event"></i> 新书速递</h2>
+            <div class="row row-cols-2 row-cols-lg-4 g-4">
+                {% for book in new_releases %}{% with book=book, context=context %}{% include '_book_card.html' %}{% endwith %}{% endfor %}
+            </div>
+        </div>
+
+        <div class="mb-5">
+            <h2 class="pb-2 border-bottom"><i class="bi bi-stars"></i> 最新入库</h2>
+            <div class="row row-cols-2 row-cols-lg-4 g-4">
+                {% for book in latest_additions %}{% with book=book, context=context %}{% include '_book_card.html' %}{% endwith %}{% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="position-sticky" style="top: 5rem;">
+            <div class="p-4 mb-3 bg-white rounded shadow-sm border">
+                <h4 class="fst-italic"><i class="bi bi-trophy"></i> 图书高分榜</h4>
+                <ol class="list-unstyled mb-0">
+                    {% for book in high_score_books %}
+                    <li><a href="{{ url_for('main.book_detail', book_id=book.id) }}" class="d-flex align-items-center py-2 text-decoration-none border-bottom"><span class="badge bg-danger rounded-pill me-2">{{ loop.index }}</span><div class="col-lg-9"><h6 class="mb-0 text-dark">{{ book.title|truncate(15) }}</h6></div></a></li>
+                    {% endfor %}
+                </ol>
+            </div>
+
+            <div class="p-4 mb-3 bg-white rounded shadow-sm border">
+                <h4 class="fst-italic"><i class="bi bi-graph-up-arrow"></i> 图书热搜榜</h4>
+                <ol class="list-unstyled mb-0">
+                    {% for item in hot_search_books %}
+                    <li><a href="{{ url_for('main.book_detail', book_id=item.book.id) }}" class="d-flex align-items-center py-2 text-decoration-none border-bottom"><span class="badge bg-warning text-dark rounded-pill me-2">{{ loop.index }}</span><div class="col-lg-9"><h6 class="mb-0 text-dark">{{ item.book.title|truncate(15) }}</h6></div><small class="text-muted ms-auto">{{ "{:,}".format(item.search_index) }}</small></a></li>
+                    {% endfor %}
+                </ol>
+            </div>
+
+            <div class="p-4 bg-white rounded shadow-sm border">
+                <h4 class="fst-italic"><i class="bi bi-tags"></i> 热门标签</h4>
+                <div class="d-flex flex-wrap gap-2">
+                    {% for tag in popular_tags %}<a href="{{ url_for('main.search', q=tag) }}" class="btn btn-sm btn-outline-secondary">{{ tag }}</a>{% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

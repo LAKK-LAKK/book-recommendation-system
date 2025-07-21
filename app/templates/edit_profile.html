@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}编辑个人信息{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h2>编辑个人信息</h2>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="">
+                    {{ form.hidden_tag() }}
+                    <div class="mb-3">{{ form.username.label(class="form-label") }}{{ form.username(class="form-control") }}</div>
+                    <div class="mb-3">{{ form.age.label(class="form-label") }}{{ form.age(class="form-control") }}</div>
+                    <div class="mb-3">{{ form.profile.label(class="form-label") }}{{ form.profile(class="form-control", rows=5) }}</div>
+                    {{ form.submit(class="btn btn-primary") }}
+                    <a href="{{ url_for('main.profile') }}" class="btn btn-secondary">取消</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
