@@ -49,6 +49,11 @@
 <p align="center">
   <img src="about/帖子详情.png" width="80%">
 </p>
+（5）数据库结构
+
+<p align="center">
+  <img src="about/数据库结构.jpg" width="80%">
+</p>
 
 ## 
 
